@@ -10,6 +10,10 @@ class FileClone
     @token_list = Array.new(@n_token)
   end
 
+  def fill clone_set
+    @token_list.fill(true, clone_set.range)
+  end
+
   def package
     @id.floor
   end

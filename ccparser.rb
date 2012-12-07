@@ -6,10 +6,12 @@ require "./lib/clone_set"
 
 class CCParser
 
-  attr_reader :package_clone
+  attr_reader :package_clone_list
+  attr_reader :file_clone_list
   def initialize
     @section = []
-    @package_clone = Hash.new {|h, k| h[k] = []}
+    @package_clone_list = Hash.new {|h, k| h[k] = []}
+    @file_clone_list = {}
   end
 
   def parse file_path
@@ -35,14 +37,18 @@ class CCParser
   private
   def parse_file_description line
     fc = FileClone.new(line)
-    @package_clone[fc.package] << fc
+    @package_clone_list[fc.package] << fc
+    @file_clone_list[fc.id] = fc
   end
 
   def parse_clone_set line
     cs = CloneSet.new(line)
+    @file_clone_list[cs.id].fill(cs)
   end
 end
 
 if $0 == __FILE__
-  CCParser.new.parse("./sample_data/crawler")
+  ccp = CCParser.new
+  ccp.parse("./sample_data/crawler")
+  pp ccp.file_clone_list
 end
