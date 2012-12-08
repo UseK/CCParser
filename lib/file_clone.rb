@@ -1,24 +1,38 @@
 #encoding: utf-8
+
 class FileClone
-  attr_reader :id
-  def initialize line
-    throw "ivalid file descripiton format" unless line =~ /(\d+\.\d+)\t(\d+)\t(\d+)\t(.+)/
-    @id = $1.to_f
-    @n_line = $2.to_i
-    @n_token = $3.to_i
-    @path = $4
-    @token_list = Array.new(@n_token)
+
+  attr_reader :token_list
+  def initialize file_description_unit
+    @file_description_unit = file_description_unit
+    @token_list = Array.new(file_description_unit.n_token) {[]}
+    @n_token = file_description_unit.n_token
   end
 
-  def fill clone_set
-    @token_list.fill(true, clone_set.range)
+  def add_fill_token(ind, range)
+    for i in range
+      throw "#{range} is out #{@token_list.length}" if @token_list.length < i - 1
+      @token_list[i-1] << ind
+      throw "lentgh is cahged from #{@n_token} to #{@token_list.length}" if @n_token != @token_list.length
+    end
   end
 
-  def package
-    @id.floor
+  def content_rate
+    n_clone_token.quo n_all_token
+  end
+
+  def n_clone_token
+    @token_list.select {|i| i != []}.length
+  end
+
+  def n_all_token
+    @token_list.length
+  end
+
+  def id
+    @file_description_unit.id
   end
 end
 
 if $0 == __FILE__
-  fc = FileClone.new("8.17\t157\t566\tC:\\Users\\UseK\\file.java")
 end
