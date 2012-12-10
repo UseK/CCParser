@@ -2,6 +2,7 @@
 class FileDescriptionUnit
   attr_reader :id
   attr_reader :n_token
+  attr_reader :path
   def initialize line
     throw "ivalid file descripiton format" unless line =~ /(\d+\.\d+)\t(\d+)\t(\d+)\t(.+)/
     @id = $1
@@ -20,7 +21,7 @@ class FileDescriptionUnit
 end
 
 if $0 == __FILE__
-  fc = FileDescriptionUnit.new("8.17\t157\t566\tC:\\Users\\UseK\\file.java")
-  p fc.package
-  p fc.file_id
+  fd_unit = FileDescriptionUnit.new("8.17\t157\t566\tC:\\Users\\UseK\\file.java")
+  p fd_unit.package
+  p fd_unit.file_id
 end
