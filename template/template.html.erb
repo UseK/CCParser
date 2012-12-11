@@ -1,17 +1,29 @@
 <html>
-  <head>heatmap</head>
-    <body>
-      <table border=0 cellspacing=1>
-        <tr>
-          <td>
-            <table>
-              <tr>
-                <td></td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-      </table>
-    </body>
+	<head>heatmap</head>
+	<body>
+		<table border=0 bgcolor="#000000" cellspacing=0 cellpadding=0>
+			<tr>
+				<td>
+					<table border=0 cellspacing=1 cellpadding=3>
+						<tr bgcolor="#FFFFFF">
+							<td></td>
+							<% @package_list.each_value do |package_path| %>
+                <td><%= package_path.gsub(/\\/) {|matched| matched + "</br>"} %></td>
+							<% end %>
+						</tr>
+            <% i = -1 %>
+						<% @table.each do |line| %>
+							<tr bgcolor="#FFFFFF">
+                <% i += 1 %>
+								<td><%= @package_list[i.to_s] %></td>
+								<% line.each do |x| %>
+                  <td bgcolor="#<%= if !x.nil? then format("%02x", x.rate * 255).to_s; else '00'; end%>aaaa"><%= "#{x.rate}(#{x.n_clone}/#{x.n_all})" if !x.nil?%></td>
+								<% end %>
+							</tr>
+						<% end %>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</body>
 </html>
-

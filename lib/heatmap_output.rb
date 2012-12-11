@@ -6,7 +6,7 @@ class HeatmapOutput
 	end
 
 	def output file_name
-		template = ERB.new(File.open("./sample_data/template.html.erb", "r").read)
+		template = ERB.new(File.open("./template/template.html.erb", "r").read)
 		File.open(file_name, "w"){|f| f.write(template.result(binding))}
 	end
 end

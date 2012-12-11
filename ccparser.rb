@@ -13,6 +13,7 @@ class CCParser
   attr_reader :file_description
   attr_reader :clone
   attr_reader :file_clone_list
+  CloneData = Struct.new("CloneData", :n_clone, :n_all, :rate)
   def initialize
     @file_description = FileDescription.new
     @clone = []
@@ -34,17 +35,28 @@ class CCParser
     @file_clone_list.each do |id, fc|
       pkg[fc.fd_unit.package] << fc
     end
-    table = Array.new(pkg.length) {Array.new(pkg.length)}
+    table = Array.new(pkg.length + 1) {Array.new(pkg.length)}
     pkg.each do |pkg_id_src, fc_list|
+      #pkg_sum = 0
+      n_all =  fc_list.inject(0) {|sum, fc| sum += fc.n_all_token}
       pkg.each_key do |pkg_id_dst|
-        next if pkg_id_src.to_i < pkg_id_dst.to_i
+
+        #pkg_sum += fc_list.inject(0) {|sum, fc| sum += fc.n_clone_token}
+
         n_clone = fc_list.inject(0) {|sum, fc| sum += fc.n_clone_token_package(pkg_id_dst)}
-        n_all =  fc_list.inject(0) {|sum, fc| sum += fc.n_all_token}
         rate = (n_clone.quo n_all).to_f.round(4)
         puts "[#{pkg_id_src.to_i}][#{pkg_id_dst}] = #{rate}"
-        table[pkg_id_src.to_i][pkg_id_dst.to_i] = rate
+        table[pkg_id_src.to_i][pkg_id_dst.to_i] = CloneData.new(n_clone, n_all, rate)
       end
+      #table[pkg_id_src.to_i][pkg.length] = (pkg_sum.quo n_all).to_f.round(4)
     end
+    table[pkg.length] = table[0..(pkg.length-1)].transpose.map do |colum|
+      sum_clone = colum.inject(0) {|sum, i| sum += i.n_clone if !i.nil?}
+      sum_all = colum.inject(0) {|sum, i| sum += i.n_all if !i.nil?}
+      rate = (sum_clone.quo sum_all).to_f.round(4)
+      CloneData.new(sum_clone, sum_all, rate)
+    end
+
     HeatmapOutput.new(table, @file_description.package_list).output (input_file + "_heatmap.html")
  end
 
@@ -93,7 +105,7 @@ end
 
 if $0 == __FILE__
   ccp = CCParser.new
-  input_file = "./sample_data/ff"
+  input_file = "./sample_data/crawler"
   ccp.output_histgram_and_heatmap(input_file)
 end
 
