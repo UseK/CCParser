@@ -21,7 +21,7 @@ class CCParser
 
   def output_histgram_and_heatmap
     HistgramOutput.output @input_file + "_histgram.txt", @file_clone_list
-    HeatmapOutput.new(@file_clone_list, @file_description.package_list).output (@input_file + "_heatmap.html")
+    HeatmapOutput.new(@file_clone_list, @file_description).output (@input_file + "_heatmap.html")
   end
 
 end

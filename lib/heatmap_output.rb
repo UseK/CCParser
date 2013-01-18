@@ -4,9 +4,9 @@ require "file_clone"
 
 class HeatmapOutput
   CloneData = Struct.new("CloneData", :n_clone, :n_all, :rate)
-	def initialize file_clone_list, package_list
+	def initialize file_clone_list, file_description
 		@table = gen_table file_clone_list
-		@package_list = package_list
+		@package_list = file_description.package_list
 	end
 
   def gen_table file_clone_list

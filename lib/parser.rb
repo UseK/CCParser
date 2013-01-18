@@ -1,9 +1,7 @@
-
 $LOAD_PATH  << File.dirname(__FILE__) 
 require "clone_set"
 require "clone_piece"
 require "file_description"
-require "file_description_unit"
 require "file_clone"
 
 module Parser
@@ -28,8 +26,7 @@ module Parser
 
       case section
       when ["file description"]
-        fd_unit = FileDescriptionUnit.new(line)
-        file_description[fd_unit.id] = fd_unit
+        file_description << FileDescriptionUnit.new(line)
       when ["clone", "set"]
         clone_set << ClonePiece.new(line)
       end
@@ -39,8 +36,8 @@ module Parser
 
   def self.build_file_clone_list file_description, clone
     file_clone_list = {}
-    file_description.each do |id, fd_unit|
-      file_clone_list[id] = FileClone.new(fd_unit)
+    file_description.each do |fd_unit|
+      file_clone_list[fd_unit.id] = FileClone.new(fd_unit)
     end
     clone.each_with_index do |clone_set, index|
       clone_set.each do |clone_piece|
@@ -55,5 +52,5 @@ end
 if $0 == __FILE__
   include Parser
   file_description, clone = Parser.parse "./sample_data/crawler"
-  Parser.build_file_clone_list file_description, clone
+  file_clone_list = Parser.build_file_clone_list file_description, clone
 end

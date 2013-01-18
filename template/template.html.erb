@@ -8,13 +8,11 @@
 						<tr bgcolor="#FFFFFF">
 							<td></td>
 							<% @package_list.each_value do |package_path| %>
-                <td><%= package_path.gsub(/\\/) {|matched| matched + "</br>"} %></td>
+                <td><%= package_path.gsub(/\//) {|matched| matched + "</br>"} %></td>
 							<% end %>
 						</tr>
-            <% i = -1 %>
-						<% @table.each do |line| %>
+						<% @table.each_with_index do |line, i| %>
 							<tr bgcolor="#FFFFFF">
-                <% i += 1 %>
 								<td><%= @package_list[i.to_s] %></td>
 								<% line.each do |x| %>
                   <td bgcolor="#<%= if !x.nil? then format("%02x", x.rate * 255).to_s; else '00'; end%>aaaa"><%= "#{x.rate}(#{x.n_clone}/#{x.n_all})" if !x.nil?%></td>
