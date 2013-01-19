@@ -21,13 +21,14 @@ class CCParser
 
   def output_histgram_and_heatmap
     HistgramOutput.output @input_file + "_histgram.txt", @file_clone_list
+    puts "heatmap output..."
     HeatmapOutput.new(@file_clone_list, @file_description).output (@input_file + "_heatmap.html")
   end
 
 end
 
 if $0 == __FILE__
-  input_file = "./sample_data/crawler"
+  input_file = "./sample_data/ff"
   ccp = CCParser.new input_file
   ccp.output_histgram_and_heatmap
 end

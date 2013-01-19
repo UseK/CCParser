@@ -16,11 +16,11 @@ class HeatmapOutput
     end
     table = Array.new(pkg.length + 1) {Array.new(pkg.length)}
     pkg.each do |pkg_id_src, fc_list|
-      n_all =  fc_list.inject(0) {|sum, fc| sum += fc.n_all_token}
+      n_all =  fc_list.inject(0) {|sum, fc| sum += fc.fd_unit.n_token}
       pkg.each_key do |pkg_id_dst|
         n_clone = fc_list.inject(0) {|sum, fc| sum += fc.n_clone_token_package(pkg_id_dst)}
         rate = (n_clone.quo n_all).to_f.round(4)
-        puts "[#{pkg_id_src.to_i}][#{pkg_id_dst}] = #{rate}"
+        puts "[#{pkg_id_src.to_i}][#{pkg_id_dst}] = #{rate}" if rate != 0.0
         table[pkg_id_src.to_i][pkg_id_dst.to_i] = CloneData.new(n_clone, n_all, rate)
       end
     end
