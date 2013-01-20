@@ -15,7 +15,7 @@ class TableCell
   end
 
   def data
-    "#{rate}</br>(#{n_clone}/#{n_all})"
+    "#{rate}(#{n_clone}/#{n_all})"
   end
 end
 

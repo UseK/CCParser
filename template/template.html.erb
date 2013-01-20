@@ -14,9 +14,13 @@
 						<% @table.each_with_index do |row, idx_row| %>
 							<tr bgcolor="#FFFFFF">
 								<td><%= @package_list[idx_row.to_s] %></td>
-								<% row.each_with_index do |cell, idx_colmn| %>
-                  <td bgcolor=<%= cell.bgcolor %> title="<%= @package_list[idx_colmn.to_s] %> &#13;&#10; to &#13;&#10;<%= @package_list[idx_row.to_s]%>&#13;&#10;<%= cell.data %>"><%= cell.rate %></td>
-								<% end %>
+                <% row.each_with_index do |cell, idx_colmn| %>
+                  <% if cell.rate != 0.0 %>
+                    <td bgcolor=<%= cell.bgcolor %> title="<%= @package_list[idx_colmn.to_s] %> &#13;&#10; to &#13;&#10;<%= @package_list[idx_row.to_s]%>&#13;&#10;<%= cell.data %>"><%= cell.rate %></td>
+                  <% else %>
+                    <td></td>
+                  <% end %>
+                <% end %>
 							</tr>
 						<% end %>
 					</table>

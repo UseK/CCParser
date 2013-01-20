@@ -34,6 +34,7 @@ class FileClone
 
   private
   def culc_clone_token fc_set
+    return 0 if fc_set == []
     token_arr = Array.new(@fd_unit.n_token)
     fc_set.each do |file_clone|
       token_arr.fill(true, file_clone.range)
@@ -61,4 +62,6 @@ if $0 == __FILE__
 
   p fc.n_clone_token_package "0"
   p fc.n_clone_token_package "1"
+  puts
+  p 1..50 + 3..70
 end
