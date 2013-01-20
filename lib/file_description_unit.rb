@@ -10,7 +10,7 @@ class FileDescriptionUnit
     @id = $1
     @n_line = $2.to_i
     @n_token = $3.to_i
-    @path = $4
+    @path = $4.gsub(/\\/, "\/")
   end
 
   def package

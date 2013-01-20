@@ -2,6 +2,7 @@
 $LOAD_PATH << File.dirname(__FILE__)
 $LOAD_PATH << File.dirname(__FILE__) + "/../lib"
 require "pp"
+require "pathname"
 require "parser"
 require "file_description"
 require "file_description_unit"
@@ -22,13 +23,15 @@ class CCParser
   def output_histgram_and_heatmap
     HistgramOutput.output @input_file + "_histgram.txt", @file_clone_list
     puts "heatmap output..."
-    HeatmapOutput.new(@file_clone_list, @file_description).output (@input_file + "_heatmap.html")
+    output_pathname = Pathname.new(@input_file + "_heatmap")
+    output_pathname.mkpath
+    HeatmapOutput.new(@file_clone_list, @file_description).output (output_pathname)
   end
 
 end
 
 if $0 == __FILE__
-  input_file = "./sample_data/ff"
+  input_file = ARGV[0] || "./sample_data/crawler"
   ccp = CCParser.new input_file
   ccp.output_histgram_and_heatmap
 end

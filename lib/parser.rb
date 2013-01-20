@@ -41,7 +41,6 @@ module Parser
     end
     clone.each_with_index do |clone_set, index|
       clone_set.each do |clone_piece|
-#        file_clone_list[clone_piece.id].add_fill_token(clone_set, clone_piece.range)
         file_clone_list[clone_piece.id].add_clone_set(clone_set, clone_piece.range)
       end
       puts "executed clone set #{index} of #{clone.length}" if index % 1000 == 0
