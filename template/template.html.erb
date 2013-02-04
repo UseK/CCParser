@@ -8,21 +8,30 @@
 						<tr bgcolor="#FFFFFF">
 							<td></td>
 							<% @package_list.each_value do |package_path| %>
-                <td Valign="top"><%= package_path.gsub(//) {|matched| matched + "</br>"} %></td>
+                <td Valign="top"><%= package_path.gsub(/.{5}/) {|matched| matched + "</br>"} %></td>
 							<% end %>
+							<td></td>
 						</tr>
 						<% @table.each_with_index do |row, idx_row| %>
 							<tr bgcolor="#FFFFFF">
 								<td><%= @package_list[idx_row.to_s] %></td>
                 <% row.each_with_index do |cell, idx_colmn| %>
                   <% if cell.rate != 0.0 %>
-                    <td bgcolor=<%= cell.bgcolor %> title="<%= @package_list[idx_colmn.to_s] %> &#13;&#10; to &#13;&#10;<%= @package_list[idx_row.to_s]%>&#13;&#10;<%= cell.data %>"><%= cell.rate %></td>
+                    <td bgcolor=<%= cell.bgcolor %> title="<%= @package_list[idx_row.to_s] %> &#13;&#10; to &#13;&#10;<%= @package_list[idx_colmn.to_s]%>&#13;&#10;<%= cell.data %>"><%= cell.rate %></td>
                   <% else %>
                     <td></td>
                   <% end %>
                 <% end %>
+								<td><%= @package_list[idx_row.to_s] %></td>
 							</tr>
 						<% end %>
+						<tr bgcolor="#FFFFFF">
+							<td></td>
+							<% @package_list.each_value do |package_path| %>
+                <td Valign="top"><%= package_path.gsub(/.{5}/) {|matched| matched + "</br>"} %></td>
+							<% end %>
+							<td></td>
+						</tr>
 					</table>
 				</td>
 			</tr>

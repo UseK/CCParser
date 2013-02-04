@@ -5,8 +5,17 @@ class FileDescription < Array
     list = {}
     self.each do |fd_unit|
       list[fd_unit.package] = File.dirname(fd_unit.path).gsub(/#{root_directory}/, "")
+#      list[fd_unit.package] = File.dirname(fd_unit.path).gsub(/#{root_directory}/, "").gsub(/(\/.+)+$/, "")
+
     end
     list
+  end
+
+  def top_list
+    list = {}
+    package_list.each_value do |package_path|
+      list = package_path.gsub(/(\.\w+){1, }$/, "")
+    end
   end
 
   def root_directory
@@ -34,7 +43,7 @@ if $0 == __FILE__
   fd = FileDescription.new
   example1 = "8.17\t157\t566\tC:\\Users\\UseK\\src\\file.java"
   example2 = "9.99\t157\t566\tC:\\Users\\UseK\\lib\\file.java"
-  example3 = "9.9\t157\t566\tC:\\Users\\UseK\\lib\\file.java"
+  example3 = "9.9\t157\t566\tC:\\Users\\UeK\\lib\\file.java"
   example4 = "10.9\t157\t566\tC:\\Users\\UseK\\lib\\file.java"
   fd << FileDescriptionUnit.new(example1)
   fd << FileDescriptionUnit.new(example2)
@@ -44,4 +53,5 @@ if $0 == __FILE__
   p fd[0].path.gsub(/^C:\/Users\/UseK/, "")
   puts
   p fd.root_directory
+  p fd.top_list
 end

@@ -31,7 +31,7 @@ class CCParser
 end
 
 if $0 == __FILE__
-  input_file = ARGV[0] || "./sample_data/crawler"
+  input_file = ARGV[0] || "./sample_data/ff"
   ccp = CCParser.new input_file
   ccp.output_histgram_and_heatmap
 end

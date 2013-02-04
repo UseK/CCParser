@@ -1,4 +1,4 @@
-$LOAD_PATH  << File.dirname(__FILE__) 
+$LOAD_PATH  << File.dirname(__FILE__)
 require "clone_set"
 require "clone_piece"
 require "file_description"

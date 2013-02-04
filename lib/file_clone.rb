@@ -32,14 +32,35 @@ class FileClone
     @nct_pkg[package.to_s] || @nct_pkg[package.to_s] = culc_clone_token(@file_clone_set.select {|file_clone| file_clone.clone_set.include_package? package})
   end
 
-  private
   def culc_clone_token fc_set
     return 0 if fc_set == []
-    token_arr = Array.new(@fd_unit.n_token)
+    range_arr = []
     fc_set.each do |file_clone|
-      token_arr.fill(true, file_clone.range)
+      range_arr << file_clone.range
     end
-    token_arr.select{|i| i}.length
+    combine_range_arr(range_arr).inject(0) {|sum, i| sum += i.count}
+  end
+
+#  def culc_clone_token fc_set
+#    return 0 if fc_set == []
+#    token_arr = Array.new(@fd_unit.n_token)
+#    fc_set.each do |file_clone|
+#      token_arr.fill(true, file_clone.range)
+#    end
+#    token_arr.select{|i| i}.length
+#  end
+
+  def combine_range_arr param_arr
+    arr = param_arr.sort_by {|i| i.begin }
+    i = 0
+    while (i < arr.length - 1)
+      if arr[i].end >= arr[i+1].begin
+        arr[i..i+1] = arr[i].begin..[arr[i].end, arr[i+1].end].max
+      else
+        i += 1
+      end
+    end
+    arr
   end
 
 end
@@ -60,8 +81,9 @@ if $0 == __FILE__
   cs2 << ClonePiece.new("1.1\t6,8,4\t14,38,43\t39")
   fc.add_clone_set cs2, 50..150
 
-  p fc.n_clone_token_package "0"
-  p fc.n_clone_token_package "1"
+  p fc.n_clone_token_package "0" #>150
+  p fc.n_clone_token_package "1" #>101
   puts
-  p 1..50 + 3..70
+
+  p fc.combine_range_arr([40..50, 20..30, 10..20]).inject(0) {|sum, i| sum += i.count }
 end

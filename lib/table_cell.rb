@@ -11,7 +11,8 @@ class TableCell
 
   def bgcolor
     return "#000000" if rate == 0.0
-    "#" + format("%02x", rate * 255).to_s + "aaaa"
+    x16 = format("%02x", [255, rate * 255 * 4].min).to_s
+    "#" + x16 +"bbbb"
   end
 
   def data
