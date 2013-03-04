@@ -2,20 +2,11 @@ $LOAD_PATH << File.dirname(__FILE__)
 require "file_description_unit"
 class FileDescription < Array
   def package_list
-    list = {}
-    self.each do |fd_unit|
-      list[fd_unit.package] = File.dirname(fd_unit.path).gsub(/#{root_directory}/, "")
-#      list[fd_unit.package] = File.dirname(fd_unit.path).gsub(/#{root_directory}/, "").gsub(/(\/.+)+$/, "")
-
-    end
-    list
+    @l ||= gen_package_list
   end
 
   def top_list
-    list = {}
-    package_list.each_value do |package_path|
-      list = package_path.gsub(/(\.\w+){1, }$/, "")
-    end
+    @tl ||= gen_top_list
   end
 
   def root_directory
@@ -23,6 +14,23 @@ class FileDescription < Array
   end
 
   private
+  def gen_package_list
+    list = {}
+    self.each do |fd_unit|
+#      list[fd_unit.package] = File.dirname(fd_unit.path).gsub(/#{root_directory}/, "")
+      list[fd_unit.package] = File.dirname(fd_unit.path).gsub(/#{root_directory}/, "").gsub(/(\/.+)+$/, "")
+
+    end
+    list
+  end
+
+  def gen_top_list
+    list = {}
+    package_list.each_value do |package_path|
+      list = package_path.gsub(/(\.\w+){1, }$/, "")
+    end
+  end
+
   def gen_root_directory
     r_dir = self[0].path
     self.each do |fd_unit|

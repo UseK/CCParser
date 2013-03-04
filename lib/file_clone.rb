@@ -32,6 +32,7 @@ class FileClone
     @nct_pkg[package.to_s] || @nct_pkg[package.to_s] = culc_clone_token(@file_clone_set.select {|file_clone| file_clone.clone_set.include_package? package})
   end
 
+  private
   def culc_clone_token fc_set
     return 0 if fc_set == []
     range_arr = []
@@ -40,15 +41,6 @@ class FileClone
     end
     combine_range_arr(range_arr).inject(0) {|sum, i| sum += i.count}
   end
-
-#  def culc_clone_token fc_set
-#    return 0 if fc_set == []
-#    token_arr = Array.new(@fd_unit.n_token)
-#    fc_set.each do |file_clone|
-#      token_arr.fill(true, file_clone.range)
-#    end
-#    token_arr.select{|i| i}.length
-#  end
 
   def combine_range_arr param_arr
     arr = param_arr.sort_by {|i| i.begin }

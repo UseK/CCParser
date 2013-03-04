@@ -4,24 +4,36 @@ require "file_clone"
 require "table_cell"
 
 class HeatmapOutput
-  TEMPTLATE_PATH = File.dirname(__FILE__) + "/../template/template.html.erb"
+  TEMPTLATE_RATE_PATH = File.dirname(__FILE__) + "/../template/template_rate.html.erb"
+  TEMPTLATE_AMMOUNT_PATH = File.dirname(__FILE__) + "/../template/template_ammount.html.erb"
 	def initialize file_clone_list, file_description
+    @max_n_clone = 0
 		@table = gen_table file_clone_list
-		@package_list = file_description.package_list
+		@file_description = file_description
+    puts "max_n_clone == #{@max_n_clone}"
 	end
 
+	def output output_pathname, options={}
+    options = {template: "rate"}.merge(options)
+    case options[:template]
+    when "rate"
+      template_path = TEMPTLATE_RATE_PATH
+    when "ammount"
+      template_path = TEMPTLATE_AMMOUNT_PATH
+    else
+      template_path = TEMPTLATE_RATE_PATH
+    end
+		template = ERB.new(File.open(template_path, "r").read)
+		output_pathname.open("w"){|f| f.write(template.result(binding))}
+	end
+
+  private
   def gen_table file_clone_list
     pkg = gen_pkg file_clone_list
     table = gen_table_body pkg
     table << gen_table_footer(table)
   end
 
-	def output output_pathname
-		template = ERB.new(File.open(TEMPTLATE_PATH, "r").read)
-		(output_pathname + "index.html").open("w"){|f| f.write(template.result(binding))}
-	end
-
-  private
   def gen_pkg file_clone_list
     pkg = Hash.new {|h, k| h[k] = []}
     file_clone_list.each do |id, fc|
@@ -35,17 +47,18 @@ class HeatmapOutput
     pkg.each do |pkg_id_src, fc_list|
       n_all =  fc_list.inject(0) {|sum, fc| sum += fc.fd_unit.n_token}
       pkg.each_key do |pkg_id_dst|
-        cell = gen_clone_cell(fc_list, pkg_id_dst, n_all)
-        puts "[#{pkg_id_src}][#{pkg_id_dst}] = #{cell.rate}" if cell.rate != 0.0
+        cell = TableCell.new(calc_n_clone(fc_list, pkg_id_dst), n_all)
+        puts "cell.rate[#{pkg_id_src}][#{pkg_id_dst}] = #{cell.rate}" if cell.rate != 0.0
         table[pkg_id_src.to_i][pkg_id_dst.to_i] = cell
       end
     end
     table
   end
 
-  def gen_clone_cell fc_list, pkg_id_dst, n_all
+  def calc_n_clone fc_list, pkg_id_dst
     n_clone = fc_list.inject(0) {|sum, fc| sum += fc.n_clone_token_package(pkg_id_dst)}
-    TableCell.new(n_clone, n_all)
+    @max_n_clone = [@max_n_clone, n_clone].max
+    n_clone
   end
 
   def gen_table_footer table

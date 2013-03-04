@@ -23,9 +23,11 @@ class CCParser
   def output_histgram_and_heatmap
     HistgramOutput.output @input_file + "_histgram.txt", @file_clone_list
     puts "heatmap output..."
-    output_pathname = Pathname.new(@input_file + "_heatmap")
-    output_pathname.mkpath
-    HeatmapOutput.new(@file_clone_list, @file_description).output (output_pathname)
+    output_dirname = Pathname.new(@input_file + "_heatmap")
+    output_dirname.mkpath
+    heatmap_output = HeatmapOutput.new(@file_clone_list, @file_description)
+    heatmap_output.output(output_dirname + "index.html")
+    heatmap_output.output(output_dirname + "index_ammount.html", template: "ammount")
   end
 
 end

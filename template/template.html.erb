@@ -1,5 +1,5 @@
 <html>
-	<head>heatmap</head>
+	<head>heatmap rate</head>
 	<body>
 		<table border=3 bgcolor="#000000" cellspacing=3 cellpadding=0>
 			<tr>
@@ -17,7 +17,7 @@
 								<td><%= @package_list[idx_row.to_s] %></td>
                 <% row.each_with_index do |cell, idx_colmn| %>
                   <% if cell.rate != 0.0 %>
-                    <td bgcolor=<%= cell.bgcolor %> title="<%= @package_list[idx_row.to_s] %> &#13;&#10; to &#13;&#10;<%= @package_list[idx_colmn.to_s]%>&#13;&#10;<%= cell.data %>"><%= cell.rate %></td>
+                    <td bgcolor=<%= cell.bgcolor %> title="<%= @package_list[idx_row.to_s] %> &#13;&#10; to &#13;&#10;<%= @package_list[idx_colmn.to_s]%>&#13;&#10;<%= cell.data_detail %>"><font color=<%= cell.font_color %>><%= cell.data %></font></td>
                   <% else %>
                     <td></td>
                   <% end %>
