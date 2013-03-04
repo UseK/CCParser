@@ -28,6 +28,8 @@ class HeatmapOutput
 	end
 
   private
+
+  private
   def gen_table file_clone_list
     pkg = gen_pkg file_clone_list
     table = gen_table_body pkg
@@ -48,7 +50,7 @@ class HeatmapOutput
       n_all =  fc_list.inject(0) {|sum, fc| sum += fc.fd_unit.n_token}
       pkg.each_key do |pkg_id_dst|
         cell = TableCell.new(calc_n_clone(fc_list, pkg_id_dst), n_all)
-        puts "cell.rate[#{pkg_id_src}][#{pkg_id_dst}] = #{cell.rate}" if cell.rate != 0.0
+        puts "cell.rate[#{pkg_id_src}][#{pkg_id_dst}] = #{cell.rate}" if cell.rate != 0.0 && $DEBUG
         table[pkg_id_src.to_i][pkg_id_dst.to_i] = cell
       end
     end

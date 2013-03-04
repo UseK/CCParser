@@ -1,6 +1,6 @@
 class HistgramOutput
-  def self.output output_file, file_clone_list
-    File.open(output_file, "w") do |output_file|
+  def self.output output_path, file_clone_list
+    File.open(output_path, "w") do |output_file|
       file_clone_list.each do |id, fc|
         arr = ["\"#{id}\"", fc.n_clone_token, fc.fd_unit.n_token, fc.content_rate.to_f.round(4)]
         #puts arr.join(',')

@@ -3,8 +3,8 @@ $LOAD_PATH << File.dirname(__FILE__)
 require "clone_piece"
 class CloneSet < Array
   def include_package? package
-    list = @pkg_list || @pkg_list = update_pkg_list
-    list.include? package.to_s
+    @pkg_list ||= update_pkg_list
+    @pkg_list.include? package.to_s
   end
 
   def update_pkg_list
