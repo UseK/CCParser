@@ -44,21 +44,43 @@ class HeatmapOutput
     pkg
   end
 
+#  def gen_table_body pkg
+#    table = Array.new(pkg.length) {Array.new(pkg.length)}
+#    pkg.each do |pkg_id_src, fc_list|
+#      n_all =  fc_list.inject(0) {|sum, fc| sum += fc.fd_unit.n_token}
+#      pkg.each_key do |pkg_id_dst|
+#        cell = TableCell.new(calc_n_clone(fc_list, pkg_id_dst), n_all)
+#        puts "cell.rate[#{pkg_id_src}][#{pkg_id_dst}] = #{cell.rate}" if cell.rate != 0.0 && $DEBUG
+#        table[pkg_id_src.to_i][pkg_id_dst.to_i] = cell
+#      end
+#    end
+#    table
+#  end
+#
+#  def calc_n_clone fc_list, pkg_id_dst
+#    n_clone = fc_list.inject(0) {|sum, fc| sum += fc.n_clone_token_package(pkg_id_dst)}
+#    @max_n_clone = [@max_n_clone, n_clone].max
+#    n_clone
+#  end
+
   def gen_table_body pkg
     table = Array.new(pkg.length) {Array.new(pkg.length)}
-    pkg.each do |pkg_id_src, fc_list|
-      n_all =  fc_list.inject(0) {|sum, fc| sum += fc.fd_unit.n_token}
-      pkg.each_key do |pkg_id_dst|
-        cell = TableCell.new(calc_n_clone(fc_list, pkg_id_dst), n_all)
+    pkg.each do |pkg_id_dst, fc_list_dst|
+      clone_set_list_dst = fc_list_dst.inject([]) {|sum, fc_dst| sum |= fc_dst.included_clone_set_list.map {|item| item.clone_set}}
+      pkg.each do |pkg_id_src, fc_list_src|
+        n_all =  fc_list_src.inject(0) {|sum, fc| sum += fc.fd_unit.n_token}
+        n_clone = fc_list_src.inject(0) {|sum, fc_src| sum += fc_src.n_clone_token_general(clone_set_list_dst)}
+        cell = TableCell.new(n_clone, n_all)
         puts "cell.rate[#{pkg_id_src}][#{pkg_id_dst}] = #{cell.rate}" if cell.rate != 0.0 && $DEBUG
         table[pkg_id_src.to_i][pkg_id_dst.to_i] = cell
+        @max_n_clone = [@max_n_clone, n_clone].max
       end
     end
     table
   end
 
-  def calc_n_clone fc_list, pkg_id_dst
-    n_clone = fc_list.inject(0) {|sum, fc| sum += fc.n_clone_token_package(pkg_id_dst)}
+  def calc_n_clone fc_list_src, clone_set_list_dst
+    n_clone = fc_list_src.inject(0) {|sum, fc_src| sum += fc_src.n_clone_token_general(clone_set_list_dst)}
     @max_n_clone = [@max_n_clone, n_clone].max
     n_clone
   end
