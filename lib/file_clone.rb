@@ -25,25 +25,24 @@ class FileClone
   end
 
   def n_clone_token
-    @nct || (@nct = culc_clone_token @included_clone_set_list)
+    @nct || (@nct = calc_clone_token @included_clone_set_list)
   end
 
   def n_clone_token_package package
-    culc_clone_token(@included_clone_set_list.select do |included_clone_set|
+    calc_clone_token(@included_clone_set_list.select do |included_clone_set|
       included_clone_set.clone_set.include_package? package
     end)
   end
 
   # 他ファイルクローンのリストに対して自身のクローンが含まれるもののトークン数を返す
   def n_clone_token_general clone_set_list_dst
-    culc_clone_token(@included_clone_set_list.select do |included_clone_set|
-      p clone_set_list_dst.length
+    calc_clone_token(@included_clone_set_list.select do |included_clone_set|
       clone_set_list_dst.include? included_clone_set.clone_set
     end)
   end
 
   private
-  def culc_clone_token fc_set
+  def calc_clone_token fc_set
     return 0 if fc_set == []
     range_arr = []
     fc_set.each do |included_clone_set|

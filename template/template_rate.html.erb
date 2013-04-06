@@ -1,55 +1,68 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    heatmap ammount
+    <h1>heatmap rate</h1>
+    <script src="jquery-1.9.1.js"></script>
+    <script src="jquery.tablesorter.min.js"></script>
   </head>
   <body>
-    <table border=3 bgcolor="#000000" cellspacing=3 cellpadding=0>
+    <table  border=3 bgcolor="#000000" cellspacing=3 cellpadding=0>
       <tr>
         <td>
-          <table border=3 cellspacing=1 cellpadding=3>
-            <tr bgcolor="white">
-              <td></td>
-              <% @file_description.package_list.each_value do |package_path| %>
-                <td Valign="top"><%= package_path.gsub(/\//) {|matched| matched + "</br>"} %></td>
-              <% end %>
-              <td></td>
-            </tr>
-            <% @table.each_with_index do |row, idx_row| %>
-              <tr bgcolor="black">
-                <td bgcolor="white"><%= @file_description.package_list[idx_row.to_s] %></td>
+          <table id="tablesorter" border=3 cellspacing=1 cellpadding=3>
 
-                <% row.each_with_index do |cell, idx_colmn| %>
-                  <% if cell.n_clone > 0 %>
-                    <td align="right"
-                      bgcolor=<%= cell.bgcolor_rate %>
-                      title="<%= @file_description.package_list[idx_row.to_s] %> &#13;&#10; to &#13;&#10;<%= @file_description.package_list[idx_colmn.to_s]%>&#13;&#10;<%= cell.data_detail %>">
-                      <font color=<%= cell.font_color_rate %>><%= cell.rate_persent %></font>
-                    </td>
-                  <% end %>
-                  <% if cell.n_clone < 0 && cell.n_clone > 0 %>
-                    <td align="right"
-                      title="<%= @file_description.package_list[idx_row.to_s] %> &#13;&#10; to &#13;&#10;<%= @file_description.package_list[idx_colmn.to_s]%>&#13;&#10;<%= cell.data_detail %>">
-                      <font color="black"><%= cell.rate_persent %></font>
-                    </td>
-                  <% end %>
-                  <% if cell.n_clone <= 0 %>
-                    <td></td>
-                  <% end %>
+            <thead bgcolor="white">
+              <tr>
+                <th></th>
+                <% @file_description.package_list.each_value do |package_path| %>
+                  <th Valign="top"><%= package_path.gsub(/\//) {|matched| matched + "</br>"} %></th>
                 <% end %>
-                <td bgcolor="white"><%= @file_description.package_list[idx_row.to_s] %></td>
+                <th></th>
               </tr>
-            <% end %>
-            <tr bgcolor="white">
-              <td></td>
-              <% @file_description.package_list.each_value do |package_path| %>
-                <td Valign="top"><%= package_path.gsub(/\//) {|matched| matched + "</br>"} %></td>
+            </thead>
+            <tbody>
+              <% @table.each_with_index do |row, idx_row| %>
+                <tr bgcolor="black">
+                  <td bgcolor="white"><%= @file_description.package_list[idx_row.to_s] %></td>
+
+                  <% row.each_with_index do |cell, idx_colmn| %>
+                    <% if cell.n_clone > 0 %>
+                      <td align="right"
+                        bgcolor=<%= cell.bgcolor_rate %>
+                        title="<%= @file_description.package_list[idx_row.to_s] %> &#13;&#10; to &#13;&#10;<%= @file_description.package_list[idx_colmn.to_s]%>&#13;&#10;<%= cell.data_detail %>">
+                        <font color=<%= cell.font_color_rate %>><%= cell.rate_persent %></font>
+                      </td>
+                    <% end %>
+                    <% if cell.n_clone < 0 && cell.n_clone > 0 %>
+                      <td align="right"
+                        title="<%= @file_description.package_list[idx_row.to_s] %> &#13;&#10; to &#13;&#10;<%= @file_description.package_list[idx_colmn.to_s]%>&#13;&#10;<%= cell.data_detail %>">
+                        <font color="black"><%= cell.rate_persent %></font>
+                      </td>
+                    <% end %>
+                    <% if cell.n_clone <= 0 %>
+                      <td></td>
+                    <% end %>
+                  <% end %>
+                  <td bgcolor="white"><%= @file_description.package_list[idx_row.to_s] %></td>
+                </tr>
               <% end %>
-              <td></td>
-            </tr>
+              <tr bgcolor="white">
+                <td></td>
+                <% @file_description.package_list.each_value do |package_path| %>
+                  <td Valign="top"><%= package_path.gsub(/\//) {|matched| matched + "</br>"} %></td>
+                <% end %>
+                <td></td>
+              </tr>
+            </tbody>
           </table>
         </td>
       </tr>
     </table>
+
+    <script>
+      $(function() {
+        $("#tablesorter").tablesorter();
+      });
+    </script>
   </body>
 </html>

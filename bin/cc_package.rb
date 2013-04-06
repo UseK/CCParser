@@ -3,8 +3,13 @@ $LOAD_PATH << File.dirname(__FILE__) + "/../lib"
 require "pp"
 require "pathname"
 require "parser"
-
 module PackageParser
+ 
+  # changerを元にidを書き換えたファイルを出力する
+  # ==== Args
+  # file_path :: 入力するファイルのパス
+  # changer :: 変更するidをまとめたハッシュの配列
+  # キーが変更前、値が変更後のid
   def self.parse file_path, changer, root_regexp
     section = []
     out_file = File.open(file_path + "_top", "w")
@@ -37,6 +42,24 @@ module PackageParser
     id = line[/^(\d+\.\d+)/, 1]
     line.gsub(/^\d+\.\d+/, changer[id])
   end
+
+
+  def make_changer file_description, root_regexp, top_arr
+    changer = {}
+    i = 0
+    new_pakcage = ""
+    file_description.each do |unit|
+      dir = unit.path.gsub(root_regexp, "")[/^(\w+)\//, 1]
+      if new_pakcage != top_arr.index(dir).to_s
+        i = 0
+        new_pakcage = top_arr.index(dir).to_s
+      else
+      end
+      changer[unit.id] = new_pakcage + "." + i.to_s
+      i += 1
+    end
+    changer
+  end
 end
 
 if $0 == __FILE__
@@ -51,20 +74,7 @@ if $0 == __FILE__
     top_arr << dir
   end
   top_arr.uniq!
-
-  changer = {}
-  i = 0
-  new_pakcage = ""
-  file_description.each do |unit|
-    dir = unit.path.gsub(root_regexp, "")[/^(\w+)\//, 1]
-    if new_pakcage != top_arr.index(dir).to_s
-      i = 0
-      new_pakcage = top_arr.index(dir).to_s
-    else
-    end
-    changer[unit.id] = new_pakcage + "." + i.to_s
-    i += 1
-  end
+  changer = PackageParser.make_changer file_description, root_regexp, top_arr
   pp changer
   PackageParser.parse input_file, changer, root_regexp
 end
