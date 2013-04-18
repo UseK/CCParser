@@ -10,7 +10,7 @@ class HeatmapOutput
   TEMPTLATE_AMMOUNT_PATH = File.dirname(__FILE__) + "/../template/template_ammount.html.erb"
 	def initialize file_clone_list, file_description
     @max_n_clone = 0
-		@table = gen_table file_clone_list
+		gen_table file_clone_list
 		@file_description = file_description
     puts "max_n_clone == #{@max_n_clone}"
 	end
@@ -42,8 +42,10 @@ class HeatmapOutput
 
   def output_csv output_pathname, options
     CSV.open(output_pathname, "w") do |csv|
-      @table.each do |line|
-        csv << line.map { |cell| cell.rate }
+      header = @table.keys.map { |id| @file_description.package_list[id] }
+      csv << (header.unshift nil)
+      @table.each do |id_row, row|
+        csv << (row.map { |key, cell| cell.rate }.unshift @file_description.package_list[id_row])
       end
     end
   end
@@ -52,8 +54,8 @@ class HeatmapOutput
   def gen_table file_clone_list
     #pkg = file_clone_list.group_by do |id, fc| puts fc.fd_unit.id; fc.fd_unit.package end
     pkg = gen_pkg file_clone_list
-    table = gen_table_body pkg
-    table << gen_table_footer(table)
+    @table = gen_table_body pkg
+    #@table_footer = gen_table_footer(table)
   end
 
   def gen_pkg file_clone_list
@@ -65,13 +67,14 @@ class HeatmapOutput
   end
 
   def gen_table_body pkg
-    table = Array.new(pkg.length) {Array.new(pkg.length)}
+    #table = Array.new(pkg.length) {Array.new(pkg.length)}
+    table = Hash.new{|h,k| h[k]=Hash.new(&h.default_proc)}
     pkg.each do |pkg_id_src, fc_list|
       n_all =  fc_list.inject(0) {|sum, fc| sum += fc.fd_unit.n_token}
       pkg.each_key do |pkg_id_dst|
         cell = TableCell.new(calc_n_clone(fc_list, pkg_id_dst), n_all)
         puts "cell.rate[#{pkg_id_src}][#{pkg_id_dst}] = #{cell.rate}" if cell.rate != 0.0 && $DEBUG
-        table[pkg_id_src.to_i][pkg_id_dst.to_i] = cell
+        table[pkg_id_src][pkg_id_dst] = cell
       end
     end
     table
