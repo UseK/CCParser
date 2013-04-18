@@ -23,6 +23,7 @@ class CCParser
     heatmap_output = HeatmapOutput.new(@file_clone_list, @file_description)
     heatmap_output.output(output_dirname + "index.html")
     heatmap_output.output(output_dirname + "index_ammount.html", template: "ammount")
+    heatmap_output.output(output_dirname + "rate.csv", format: "csv")
   end
 
 end

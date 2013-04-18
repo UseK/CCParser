@@ -26,7 +26,8 @@ module Parser
 
       case section
       when ["file description"]
-        file_description << FileDescriptionUnit.new(line)
+        fd_unit = FileDescriptionUnit.new(line)
+        file_description[fd_unit.id] = fd_unit
       when ["clone", "set"]
         clone_set << ClonePiece.new(line)
       end
@@ -36,8 +37,8 @@ module Parser
 
   def self.build_file_clone_list file_description, clone
     file_clone_list = {}
-    file_description.each do |fd_unit|
-      file_clone_list[fd_unit.id] = FileClone.new(fd_unit)
+    file_description.each do |id, fd_unit|
+      file_clone_list[id] = FileClone.new(fd_unit)
     end
     clone.each_with_index do |clone_set, index|
       clone_set.each do |clone_piece|

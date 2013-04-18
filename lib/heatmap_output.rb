@@ -2,6 +2,8 @@ $LOAD_PATH << File.dirname(__FILE__)
 require 'erb'
 require "file_clone"
 require "table_cell"
+require "csv"
+require "pp"
 
 class HeatmapOutput
   TEMPTLATE_RATE_PATH = File.dirname(__FILE__) + "/../template/template_rate.html.erb"
@@ -14,23 +16,41 @@ class HeatmapOutput
 	end
 
 	def output output_pathname, options={}
-    options = {template: "rate"}.merge(options)
+    options = {template: "rate", format: "html"}.merge(options)
+    case options[:format]
+    when "html"
+      output_html output_pathname, options
+    when "csv"
+      output_csv output_pathname, options
+    else
+      raise "invalid format: #{options[:format]}"
+    end
+	end
+
+  def output_html output_pathname, options
     case options[:template]
     when "rate"
       template_path = TEMPTLATE_RATE_PATH
     when "ammount"
       template_path = TEMPTLATE_AMMOUNT_PATH
     else
-      template_path = TEMPTLATE_RATE_PATH
+      raise "invalid template: #{optionts[:template]}"
     end
 		template = ERB.new(File.open(template_path, "r").read)
 		output_pathname.open("w"){|f| f.write(template.result(binding))}
-	end
+  end
 
-  private
+  def output_csv output_pathname, options
+    CSV.open(output_pathname, "w") do |csv|
+      @table.each do |line|
+        csv << line.map { |cell| cell.rate }
+      end
+    end
+  end
 
   private
   def gen_table file_clone_list
+    #pkg = file_clone_list.group_by do |id, fc| puts fc.fd_unit.id; fc.fd_unit.package end
     pkg = gen_pkg file_clone_list
     table = gen_table_body pkg
     table << gen_table_footer(table)
