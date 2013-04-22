@@ -1,55 +1,81 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    heatmap ammount
+    <h1>Heatmap Ammount</h1>
+    <h1>Root Directory: <%= @file_description.root_directory %></h1>
+    <script src="jquery/jquery-1.9.1.js"></script>
+    <script src="jquery/jquery.tablesorter.min.js"></script>
   </head>
   <body>
-    <table border=3 bgcolor="#000000" cellspacing=3 cellpadding=0>
+    <table  border=3 bgcolor="#000000" cellspacing=3 cellpadding=0>
       <tr>
         <td>
-          <table border=3 cellspacing=1 cellpadding=3>
-            <tr bgcolor="white">
-              <td></td>
-              <% @file_description.package_list.each_value do |package_path| %>
-                <td Valign="top"><%= package_path.gsub(/\//) {|matched| matched + "</br>"} %></td>
-              <% end %>
-              <td></td>
-            </tr>
-            <% @table.each do |id_row, row| %>
-              <tr bgcolor="black">
-                <td bgcolor="white"><%= @file_description.package_list[id_row] %></td>
+          <table id="tablesorter" width=800 border=3 cellspacing=1 cellpadding=3>
 
-                <% row.each do |id_colmn, cell| %>
-                  <% if cell.n_clone > 0 %>
-                    <td align="right"
-                      bgcolor=<%= cell.bgcolor_ammount @max_n_clone %>
-                      title="<%= @file_description.package_list[id_row] %> &#13;&#10; to &#13;&#10;<%= @file_description.package_list[id_colmn]%>&#13;&#10;<%= cell.data_detail %>">
-                      <font color=<%= cell.font_color_ammount @max_n_clone %>><%= cell.n_clone %></font>
-                    </td>
-                  <% end %>
-                  <% if cell.n_clone < 0 && cell.n_clone > 0 %>
-                    <td align="right"
-                      title="<%= @file_description.package_list[id_row] %> &#13;&#10; to &#13;&#10;<%= @file_description.package_list[id_colmn]%>&#13;&#10;<%= cell.data_detail %>">
-                      <font color="black"><%= cell.n_clone %></font>
-                    </td>
-                  <% end %>
-                  <% if cell.n_clone <= 0 %>
-                    <td></td>
-                  <% end %>
+            <thead bgcolor="white">
+              <tr>
+                <th></th>
+                <% @file_description.package_list.each_value do |package_path| %>
+                  <th Valign="top"><%= package_path.gsub(/\//) {|matched| matched + "</br>"} %></th>
                 <% end %>
-                <td bgcolor="white"><%= @file_description.package_list[id_row] %></td>
+                <th></th>
               </tr>
-            <% end %>
+            </thead>
+            <tbody>
+              <% @table.each do |id_row, row| %>
+                <tr bgcolor="black">
+                  <td bgcolor="white"><%= @file_description.package_list[id_row] %></td>
+
+                  <% row.each do |id_colmn, cell| %>
+                    <% if cell.n_clone > 0 %>
+                      <td align="right"
+                        bgcolor=<%= cell.bgcolor_ammount @max_n_clone %>
+                        title="<%= @file_description.package_list[id_row] %> &#13;&#10; to &#13;&#10;<%= @file_description.package_list[id_colmn]%>&#13;&#10;<%= cell.data_detail %>">
+                        <font color=<%= cell.font_color_ammount @max_n_clone %>><%= cell.n_clone %></font>
+                      </td>
+                    <% end %>
+                    <% if cell.n_clone <= 0 %>
+                      <td></td>
+                    <% end %>
+                  <% end %>
+                  <td bgcolor="white"><%= @file_description.package_list[id_row] %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <h1>集計結果</h1>
+    <table  border=3 bgcolor="#000000" cellspacing=3 cellpadding=0>
+      <tr>
+        <td>
+          <table width=800 border=3 cellspacing=1 cellpadding=3>
             <tr bgcolor="white">
               <td></td>
               <% @file_description.package_list.each_value do |package_path| %>
                 <td Valign="top"><%= package_path.gsub(/\//) {|matched| matched + "</br>"} %></td>
               <% end %>
-              <td></td>
+            </tr>
+            <tr>
+              <td><font color="white">合計</font></td>
+              <% @table_footer.each do |cell| %>
+                <td align="right"
+                  bgcolor=<%= cell.bgcolor_ammount @max_n_clone %>>
+                  <font color=<%= cell.font_color_ammount @max_n_clone %>><%= cell.n_clone %></font>
+                </td>
+              <% end %>
             </tr>
           </table>
         </td>
       </tr>
     </table>
+    <script>
+      $(function() {
+        $("#tablesorter").tablesorter();
+        $("td").css("width", 20);
+        $("th").css("width", 20);
+      });
+    </script>
   </body>
 </html>

@@ -2,6 +2,7 @@
 $LOAD_PATH << File.dirname(__FILE__)
 $LOAD_PATH << File.dirname(__FILE__) + "/../lib"
 require "pp"
+require "fileutils"
 require "pathname"
 require "parser"
 require "heatmap_output"
@@ -24,6 +25,9 @@ class CCParser
     heatmap_output.output(output_dirname + "index.html")
     heatmap_output.output(output_dirname + "index_ammount.html", template: "ammount")
     heatmap_output.output(output_dirname + "rate.csv", format: "csv")
+
+
+    FileUtils.cp_r(File.dirname(__FILE__) + "/../jquery", output_dirname)
   end
 
 end

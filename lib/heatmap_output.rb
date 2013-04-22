@@ -54,8 +54,8 @@ class HeatmapOutput
   def gen_table file_clone_list
     #pkg = file_clone_list.group_by do |id, fc| puts fc.fd_unit.id; fc.fd_unit.package end
     pkg = gen_pkg file_clone_list
-    @table = gen_table_body pkg
-    #@table_footer = gen_table_footer(table)
+    @table, @table_arr = gen_table_body pkg
+    @table_footer = gen_table_footer
   end
 
   def gen_pkg file_clone_list
@@ -67,7 +67,7 @@ class HeatmapOutput
   end
 
   def gen_table_body pkg
-    #table = Array.new(pkg.length) {Array.new(pkg.length)}
+    table_arr = Array.new(pkg.length) {Array.new(pkg.length)}
     table = Hash.new{|h,k| h[k]=Hash.new(&h.default_proc)}
     pkg.each do |pkg_id_src, fc_list|
       n_all =  fc_list.inject(0) {|sum, fc| sum += fc.fd_unit.n_token}
@@ -75,9 +75,10 @@ class HeatmapOutput
         cell = TableCell.new(calc_n_clone(fc_list, pkg_id_dst), n_all)
         puts "cell.rate[#{pkg_id_src}][#{pkg_id_dst}] = #{cell.rate}" if cell.rate != 0.0 && $DEBUG
         table[pkg_id_src][pkg_id_dst] = cell
+        table_arr[pkg_id_src.to_i][pkg_id_dst.to_i] = cell
       end
     end
-    table
+    [table, table_arr]
   end
 
   def calc_n_clone fc_list, pkg_id_dst
@@ -108,8 +109,8 @@ class HeatmapOutput
 #    n_clone
 #  end
 
-  def gen_table_footer table
-    table.transpose.map do |colum|
+  def gen_table_footer
+    @table_arr.transpose.map do |colum|
       sum_clone = colum.inject(0) {|sum, i| sum += i.n_clone if !i.nil?}
       sum_all = colum.inject(0) {|sum, i| sum += i.n_all if !i.nil?}
       TableCell.new(sum_clone, sum_all)

@@ -1,15 +1,16 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <h1>heatmap rate</h1>
-    <script src="jquery-1.9.1.js"></script>
-    <script src="jquery.tablesorter.min.js"></script>
+    <h1>Heatmap Rate</h1>
+    <h1>Root Directory: <%= @file_description.root_directory %></h1>
+    <script src="jquery/jquery-1.9.1.js"></script>
+    <script src="jquery/jquery.tablesorter.min.js"></script>
   </head>
   <body>
     <table  border=3 bgcolor="#000000" cellspacing=3 cellpadding=0>
       <tr>
         <td>
-          <table id="tablesorter" border=3 cellspacing=1 cellpadding=3>
+          <table id="tablesorter" width=800 border=3 cellspacing=1 cellpadding=3>
 
             <thead bgcolor="white">
               <tr>
@@ -46,22 +47,40 @@
                   <td bgcolor="white"><%= @file_description.package_list[id_row] %></td>
                 </tr>
               <% end %>
-              <tr bgcolor="white">
-                <td></td>
-                <% @file_description.package_list.each_value do |package_path| %>
-                  <td Valign="top"><%= package_path.gsub(/\//) {|matched| matched + "</br>"} %></td>
-                <% end %>
-                <td></td>
-              </tr>
             </tbody>
           </table>
         </td>
       </tr>
     </table>
-
+    <h1>集計結果</h1>
+    <table  border=3 bgcolor="#000000" cellspacing=3 cellpadding=0>
+      <tr>
+        <td>
+          <table width=800 border=3 cellspacing=1 cellpadding=3>
+            <tr bgcolor="white">
+              <td></td>
+              <% @file_description.package_list.each_value do |package_path| %>
+                <td Valign="top"><%= package_path.gsub(/\//) {|matched| matched + "</br>"} %></td>
+              <% end %>
+            </tr>
+            <tr>
+              <td><font color="white">合計</font></td>
+              <% @table_footer.each do |cell| %>
+                <td align="right"
+                  bgcolor=<%= cell.bgcolor_rate %>>
+                  <font color=<%= cell.font_color_rate %>><%= cell.rate_persent %></font>
+                </td>
+              <% end %>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
     <script>
       $(function() {
         $("#tablesorter").tablesorter();
+        $("td").css("width", 20);
+        $("th").css("width", 20);
       });
     </script>
   </body>
