@@ -11,6 +11,10 @@ class TableCell
     @rate ||= (@n_clone.quo @n_all).to_f.round(4)
   end
 
+  def ammount
+    @n_clone
+  end
+
   def bgcolor_rate
     HeatmapUtility.get_color(rate * 255)
   end

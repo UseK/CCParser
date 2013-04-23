@@ -25,6 +25,7 @@ class CCParser
     heatmap_output.output(output_dirname + "index.html")
     heatmap_output.output(output_dirname + "index_ammount.html", template: "ammount")
     heatmap_output.output(output_dirname + "rate.csv", format: "csv")
+    heatmap_output.output(output_dirname + "ammount.csv", format: "csv", template: "ammount")
 
 
     FileUtils.cp_r(File.dirname(__FILE__) + "/../jquery", output_dirname)

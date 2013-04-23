@@ -44,8 +44,17 @@ class HeatmapOutput
     CSV.open(output_pathname, "w") do |csv|
       header = @table.keys.map { |id| @file_description.package_list[id] }
       csv << (header.unshift nil)
-      @table.each do |id_row, row|
-        csv << (row.map { |key, cell| cell.rate }.unshift @file_description.package_list[id_row])
+      case options[:template]
+      when "rate"
+        @table.each do |id_row, row|
+          csv << (row.map { |key, cell| cell.rate }.unshift @file_description.package_list[id_row])
+        end
+      when "ammount"
+        @table.each do |id_row, row|
+          csv << (row.map { |key, cell| cell.ammount }.unshift @file_description.package_list[id_row])
+        end
+      else
+        raise "invalid template: #{optionts[:template]}"
       end
     end
   end
