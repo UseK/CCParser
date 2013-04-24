@@ -48,7 +48,7 @@ module PackageParser
     file_description, clone = Parser.parse input_file
     top_arr = []
     root_regexp = /#{file_description.root_directory}/
-      file_description.each do |unit|
+      file_description.each_value do |unit|
       dir = unit.path.gsub(root_regexp, "")[/^(\w+)\//, 1]
       top_arr << dir
       end
@@ -60,7 +60,7 @@ module PackageParser
     changer = {}
     i = 0
     new_pakcage = ""
-    file_description.each do |unit|
+    file_description.each_value do |unit|
       dir = unit.path.gsub(root_regexp, "")[/^(\w+)\//, 1]
       if new_pakcage != top_arr.index(dir).to_s
         i = 0
