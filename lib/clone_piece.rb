@@ -16,7 +16,7 @@ class ClonePiece
   end
 
   def package
-    @id[/(\d+).\d+/, 1]
+    @id.split(".")[0]
   end
 
   def range
