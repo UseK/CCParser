@@ -8,14 +8,14 @@ require "pp"
 class HeatmapOutput
   TEMPTLATE_RATE_PATH = File.dirname(__FILE__) + "/../template/template_rate.html.erb"
   TEMPTLATE_AMMOUNT_PATH = File.dirname(__FILE__) + "/../template/template_ammount.html.erb"
-	def initialize file_clone_list, file_description
+  def initialize file_clone_list, file_description
     @max_n_clone = 0
-		gen_table file_clone_list
-		@file_description = file_description
+    gen_table file_clone_list
+    @file_description = file_description
     puts "max_n_clone == #{@max_n_clone}"
-	end
+  end
 
-	def output output_pathname, options={}
+  def output output_pathname, options={}
     options = {template: "rate", format: "html"}.merge(options)
     case options[:format]
     when "html"
@@ -25,7 +25,7 @@ class HeatmapOutput
     else
       raise "invalid format: #{options[:format]}"
     end
-	end
+  end
 
   def output_html output_pathname, options
     case options[:template]
@@ -36,8 +36,8 @@ class HeatmapOutput
     else
       raise "invalid template: #{optionts[:template]}"
     end
-		template = ERB.new(File.open(template_path, "r").read)
-		output_pathname.open("w"){|f| f.write(template.result(binding))}
+    template = ERB.new(File.open(template_path, "r").read)
+    output_pathname.open("w"){|f| f.write(template.result(binding))}
   end
 
   def output_csv output_pathname, options
